@@ -280,7 +280,6 @@ public class dao {
     public int deleteByIsbn(String bn, String uID) {
         int success=0;
         String q4="Delete from Cart where userid=\'"+uID+"\' and isbn=\'"+bn+"\' ";
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
        Statement stmt;
         try {
             stmt = con.createStatement();
@@ -301,7 +300,6 @@ public class dao {
          int success=0;
          
         String q4="update Cart set qty=? where userid=? and isbn=? ";
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
        Statement stmt;
         try {
        PreparedStatement ps= con.prepareStatement(q4);
@@ -318,8 +316,7 @@ public class dao {
         
         System.out.print(success+"  xxxxxxxxxxxxxxxxxxxxxxxxx");
         return success;
-        
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
    public Members getUserInfo(String uID) {
@@ -351,7 +348,6 @@ public class dao {
         System.out.print(success+"  xxxxxxxxxxxxxxxxxxxxxxxxx");
         
         return m;
-//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 
@@ -382,15 +378,36 @@ public class dao {
             Logger.getLogger(dao.class.getName()).log(Level.SEVERE, null, ex);
         }      
          return success;  
-
-
-//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    void checkout(Members m) {
-        
 
-//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+    void displayOrderInvoice(String uID) {
+        
+         String q4="Select * from Orders where userid=\'"+uID+"\'";//"Insert into Cart(userid,isbn,qty)VALUES(?,?,?)"  ;//"SELECT * FROM Books WHERE isbn=\'"+j+"\'";
+
+        Statement stmt;
+        try {
+            stmt = con.createStatement();
+             ResultSet rs= stmt.executeQuery(q4);
+             while(rs.next()){
+                 String a=rs.getString("USERID");
+                 //userid,ono,received,shipped,shipAddress,shipCity,shipState,shipZip
+                 int b= rs.getInt("ono");
+                 Date c=rs.getDate("received");
+                 Date d=rs.getDate("shipped");
+                 String e= rs.getString("shipaddress");
+                 String f=rs.getString("shipcity");
+                 String g= rs.getString("shipstate");
+                 int h=rs.getInt("shipzip");
+                 System.out.println(a+"  "+b+"  "+c.toString()+"  "+d.toString()+"  "+e+"  "+f+"  "+g+"  "+h+"  ");
+             }
+             
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(dao.class.getName()).log(Level.SEVERE, null, ex);
+        }    
+
     }
 
     

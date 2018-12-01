@@ -29,30 +29,24 @@ public class KristinaBookstore {
 
 Map<Integer,String> mp= new HashMap<>();
 public static String uID=null;
-     
- 
-    public static void main(String[] args) {
-     Scanner sc= new Scanner(System.in);
-      dao d= new dao();
-      
-      //login
-      System.out.println("Would you like to login? 1: Yes 0:No");
-      int p1= sc.nextInt();
-      if(p1==1){
-       userLogin(d);
-      }
-   
-      //registration
-      System.out.println("Would you like to register a user? 1: Yes 0:No");
-      int prompt= sc.nextInt();
-      if(prompt==1){
-     addUser(d);
-      }
+
+    public static void banner(){
+              System.out.println("\n********************************************************************** ");
+        System.out.println("\n***                                                                ***");
+        System.out.println("\n***             Welcome to the Online Book Store                   ***");
+        System.out.println("\n***                                                                ***");
+        System.out.println("\n********************************************************************** ");
+        System.out.println("\n           1. Member Login \n           2. New Member Registration \n           q. Quit");   
+    }
     
-      System.out.println("Please make a choice");
+    public static void programFlow(dao d){
+        Scanner sc= new Scanner(System.in);
+        int choice;
+        do{
+             System.out.println("Please make a choice");
        System.out.println("\n 1. Browse by Subject \n 2. Search by Author/Title/Subject \n  3. View/Edit Shopping Cart \n "
                 + "4. Check Order Status \n 5. Check Out \n  6. One Click Check Out \n  7. View/Edit Personal Information \n 8. Logout");
-      int choice=sc.nextInt();sc.nextLine();
+      choice=sc.nextInt();sc.nextLine();
       //list all subjects
        
       //ask to enter isbn and add to cart
@@ -62,82 +56,49 @@ public static String uID=null;
           case 1:  listSubjects(d); isbnToCart(d); break;
           case 2:  listATS(d);isbnToCart(d);break;
           case 3:  System.out.println("Current Cart Contents:");showCart(d);editCart(d);break;
+          case 4:  d.displayOrderInvoice(uID);break;
           case 5:  
                     System.out.println("Current Cart Contents:");
                     showCart(d);
                     System.out.println("Proceed to checkout(y/n)");
                     char ch= sc.nextLine().toLowerCase().charAt(0);
                     List<Object> mem=null;
-                    Members m= d.getUserInfo(uID);
+                    Members m=null;
+                    
                     if(ch=='y'){
                         mem=enterNewAddress();
                     }
-                    if(mem==null){
+                    m= d.getUserInfo(uID);
+                    
+                    if(mem.isEmpty()){
                      checkOutAssist(d);   
                     }
                     else{
                         List<Cart> clist= new ArrayList<>();
                         showInfoNew(mem, m);
-                        clist=showCart(d);
-                    //d.checkout(m);
-                    //checkOut(m,d);
-                    
-                    d.addToOrders(uID, clist, m);
-                        
+                        //System.out.println("Invoice for Order #"+orderno);
+                        clist=showCart(d);             
+                        d.addToOrders(uID, clist, m);                    
                     }
-                  
-                    
                     break;
-                    
-                    
-                    //d.checkout(m);
-                    //checkOut(m,d);
-                    //d.addToOrders(uID, clist, m);
-                    
-                   // break;
           case 6:  
                    checkOutAssist(d);
-                    break;
+                    break;                    
+          case 8: System.out.println("Succesfully logged out");break;
           
       }
- 
-    }
-     private static void showInfoNew(List<Object> l,Members m) {
-        //List<Cart> cartList= new ArrayList<>();
-         
-         //showMember(m);        
-         System.out.println("Shipping Address\t\t\t\t\t\tBilling Address");
-         System.out.println("Name:"+m.getFname()+" "+m.getLname()+"\t\t\t\t\t"+"Name:"+l.get(0).toString()+" "+l.get(1).toString());
-         System.out.println("Address:"+m.getAddress()+"\t\t\t\t\t"+"Name:"+l.get(2).toString());
-         System.out.println(m.getCity()+"\t\t\t\t\t"+l.get(3).toString());
-         System.out.println(m.getState()+" "+m.getZip()+"\t\t\t\t\t"+l.get(4).toString()+" "+l.get(5).toString());
-         
-         //cartList= showCart(d);       
-         //ONO INTEGER , RECEIVED DATE, SHIPADDRESS, SHIPCITY, SHIPPED DATE, SHIPSTATE, SHIPZIP INTEGER, USERID)
-         //d.addToOrders(uID,cartList,m,ono);
-         
-         
-//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      
+        }while(choice!=8);        
     }
     
     
-    private static void checkOutAssist(dao d){
-                     Members m= d.getUserInfo(uID);
-                    List<Cart> clist= new ArrayList<>();
-                    showInfo(m,d);
-                    clist=showCart(d);
-                    //d.checkout(m);
-                    //checkOut(m,d);
-                    d.addToOrders(uID, clist, m);
-    }
-    
-    private static List<Object> enterNewAddress() {
-          Scanner sc=new Scanner(System.in);
-          List<Object> m=new ArrayList<>();
-               String fName,lName,add,city,state;int zipNumber;
+     private static List<Object> enterNewAddress() {
+      Scanner sc=new Scanner(System.in);
+     List<Object> m=new ArrayList<>();
+     String fName,lName,add,city,state;int zipNumber;
      System.out.println("Do you want to enter new Shipping address(y/n): ");
      char ch= sc.nextLine().toLowerCase().charAt(0);
-                    if(ch=='y'){
+    if(ch=='y'){
                        
      System.out.println("Enter First Name");
      fName= sc.nextLine();
@@ -154,9 +115,10 @@ public static String uID=null;
      sc.nextLine();
      m=Arrays.asList(uID, fName, lName, add, city, state, zipNumber);
      }
-                    System.out.println("Do you want to enter new Credit Card Number(y/n): ");
+    
+    System.out.println("Do you want to enter new Credit Card Number(y/n): ");
      char ch1= sc.nextLine().toLowerCase().charAt(0);
-                    if(ch1=='y'){
+    if(ch1=='y'){
      System.out.println("Enter Credit Card Type");
      String creditcardtype= sc.nextLine();
      System.out.println("Enter Credit Card Number");
@@ -167,15 +129,40 @@ return m;
 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-     private static void showInfo(Members m,dao d) {
+ 
+    public static void main(String[] args) {
+     Scanner sc= new Scanner(System.in);
+      dao d= new dao();
+      
+
+      char p1;
+      do{
+       banner();
+       p1= sc.nextLine().toLowerCase().charAt(0);  
+      if(p1=='1'){
+       userLogin(d);
+       programFlow(d);
+       //break;
+      }
+
+      if(p1=='2'){
+     addUser(d);   
+      }
+      }while(p1!='q');
+      
+      
+ 
+ 
+    }
+     private static void showInfoNew(List<Object> l,Members m) {
         //List<Cart> cartList= new ArrayList<>();
          
          //showMember(m);        
          System.out.println("Shipping Address\t\t\t\t\t\tBilling Address");
-         System.out.println("Name:"+m.getFname()+" "+m.getLname()+"\t\t\t\t\t"+"Name:"+m.getFname()+" "+m.getLname());
-         System.out.println("Address:"+m.getAddress()+"\t\t\t\t\t"+"Name:"+m.getAddress());
-         System.out.println(m.getCity()+"\t\t\t\t\t"+m.getCity());
-         System.out.println(m.getState()+" "+m.getZip()+"\t\t\t\t\t"+m.getState()+" "+m.getZip());
+         System.out.println("Name:"+m.getFname()+" "+m.getLname()+"\t\t\t\t\t"+"Name:"+l.get(1).toString()+" "+l.get(1).toString());
+         System.out.println("Address:"+m.getAddress()+"\t\t\t\t\t"+"Name:"+l.get(2).toString());
+         System.out.println(m.getCity()+"\t\t\t\t\t"+l.get(3).toString());
+         System.out.println(m.getState()+" "+m.getZip()+"\t\t\t\t\t"+l.get(4).toString()+" "+l.get(5).toString());
          
          //cartList= showCart(d);       
          //ONO INTEGER , RECEIVED DATE, SHIPADDRESS, SHIPCITY, SHIPPED DATE, SHIPSTATE, SHIPZIP INTEGER, USERID)
@@ -184,16 +171,29 @@ return m;
          
 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-      private static void showMember(Members m) {
-        
-//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+          private static void showInfo(Members m,dao d) {
+       
+         System.out.println("Shipping Address\t\t\t\t\t\tBilllling Address");
+         System.out.println("Name:"+m.getFname()+" "+m.getLname()+"\t\t\t\t\t"+"Name:"+m.getFname()+" "+m.getLname());
+         System.out.println("Address:"+m.getAddress()+"\t\t\t\t\t"+"Name:"+m.getAddress());
+         System.out.println(m.getCity()+"\t\t\t\t\t"+m.getCity());
+         System.out.println(m.getState()+" "+m.getZip()+"\t\t\t\t\t"+m.getState()+" "+m.getZip());
     }
-     
-     private static void checkOut(Members m, dao d) {
+    
+    
+    private static void checkOutAssist(dao d){
         
-         
-//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                    Members m= d.getUserInfo(uID);
+                    List<Cart> clist= new ArrayList<>();
+                    showInfo(m,d);
+                    clist=showCart(d);
+                    d.addToOrders(uID, clist, m);
     }
+    
+
+    
+
+
 
     
     public static List<Cart> showCart(dao d){
@@ -213,8 +213,14 @@ return m;
     
      private static void editCart(dao d) {
          Scanner sc= new Scanner(System.in);
+         //char choice='';
          System.out.println("Enter d to delete; e to edit your cart");
          String choice=sc.nextLine();
+         
+         if(choice.isEmpty()){
+             choice="n";
+         }
+         
          switch(choice.charAt(0)){
              case 'd':  System.out.println("Enter ISBN to delete");
                         String isbn=sc.nextLine();
@@ -228,6 +234,8 @@ return m;
                         System.out.println("Enter new qty");
                         int qty2=sc.nextInt();sc.nextLine();
                         int success2=d.editByIsbn(isbn2,uID,qty2);
+                        break;
+             default:   break;
              
          }
          
